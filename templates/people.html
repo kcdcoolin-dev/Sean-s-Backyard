@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}People · {{ site.title }}{% endblock %}
+{% block main %}
+<section class="wrap section">
+  <h1 class="display page-title">People</h1>
+  {% if people %}
+  <div class="cards cards--small">
+    {% for someone in people %}
+    <a class="card card--link" href="{{ someone.slug }}/">
+      <span class="display card__title">{{ someone.title }}</span>
+      <span class="muted small">{{ someone.history.titles|length }} title{{ '' if someone.history.titles|length == 1 else 's' }} · {{ someone.history.played|length }} season{{ '' if someone.history.played|length == 1 else 's' }} played</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">Nobody has been added yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

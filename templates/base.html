@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site.title }}{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="{{ root }}assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href="{{ root or './' }}">{{ site.title }}</a>
+    <nav aria-label="Main" class="site-nav">
+      <a href="{{ root }}leagues/"{% if section == 'leagues' %} aria-current="page"{% endif %}>Leagues &amp; events</a>
+      <a href="{{ root }}records/"{% if section == 'records' %} aria-current="page"{% endif %}>Hall of records</a>
+      <a href="{{ root }}people/"{% if section == 'people' %} aria-current="page"{% endif %}>People</a>
+      <a href="{{ root }}blog/"{% if section == 'blog' %} aria-current="page"{% endif %}>Blog</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+{% block main %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <span>{{ site.footer or site.title }}</span>
+    {% if site.admin_url %}<a href="{{ site.admin_url }}">Admin sign-in</a>{% endif %}
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% macro person_link(who, root) -%}
+{% if who %}{% if who.has_page %}<a href="{{ root }}people/{{ who.slug }}/">{{ who.name }}</a>{% else %}{{ who.name }}{% endif %}{% endif %}
+{%- endmacro %}
+
+{% macro post_rows(posts, root) %}
+<div class="rows">
+  {% for post in posts %}
+  <a class="post-row" href="{{ root }}blog/{{ post.slug }}/">
+    <span class="label">{{ post.tag }}</span>
+    <span class="post-row__title">{{ post.title }}</span>
+    <span class="muted small">{{ post.date_text }}</span>
+  </a>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro season_block(league, season, root) %}
+{% if league.is_game %}
+  {% if season.cast_rows %}
+  <div class="table-scroll">
+    <table class="table">
+      <thead><tr><th scope="col">Player</th><th scope="col">Role</th><th scope="col">How it ended</th></tr></thead>
+      <tbody>
+        {% for row in season.cast_rows %}
+        <tr>
+          <td class="strong">{{ person_link(row.person, root) }}</td>
+          <td class="muted">{{ row.role }}</td>
+          <td>{{ row.result }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">The cast for this season hasn't been entered yet.</p>
+  {% endif %}
+{% else %}
+  {% if season.standings_rows %}
+  <div class="table-scroll">
+    <table class="table">
+      <thead><tr><th scope="col" class="num-col">#</th><th scope="col">Team</th><th scope="col">Manager</th><th scope="col" class="right">W–L</th><th scope="col" class="right">PF</th><th scope="col" class="right">PA</th></tr></thead>
+      <tbody>
+        {% for row in season.standings_rows %}
+        <tr{% if loop.first %} class="first"{% endif %}>
+          <td class="rank">{{ row.position }}</td>
+          <td class="strong">{{ row.team }}</td>
+          <td class="muted">{{ person_link(row.manager, root) }}</td>
+          <td class="right">{{ row.record }}</td>
+          <td class="right">{{ row.points_for }}</td>
+          <td class="right">{{ row.points_against }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">Standings for this season haven't been entered yet.</p>
+  {% endif %}
+{% endif %}
+{% if season.body_html %}
+<div class="prose">{{ season.body_html }}</div>
+{% endif %}
+{% endmacro %}

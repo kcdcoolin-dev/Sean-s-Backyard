@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Leagues &amp; events · {{ site.title }}{% endblock %}
+{% block main %}
+<section class="wrap section">
+  <h1 class="display page-title">Leagues &amp; events</h1>
+  {% if leagues %}
+  <div class="cards">
+    {% for league in leagues %}
+    <article class="card">
+      {% if league.kind %}<span class="label">{{ league.kind }}</span>{% endif %}
+      <h2 class="display card__title">{{ league.title }}</h2>
+      {% if league.description %}<p class="muted">{{ league.description }}</p>{% endif %}
+      <p class="muted small">
+        {{ league.seasons|length }} season{{ '' if league.seasons|length == 1 else 's' }} on record{% if league.reigning %} · Reigning champion: {{ league.reigning.champion_person.name }}{% endif %}
+      </p>
+      <a class="card__link" href="{{ league.slug }}/">{{ 'Event page' if league.is_game else 'League page' }}<span class="sr-only">: {{ league.title }}</span></a>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No leagues or events have been added yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% from "parts.html" import person_link, post_rows, season_block %}
+{% block title %}{% if season_page %}{{ season.title }} · {% endif %}{{ league.title }} · {{ site.title }}{% endblock %}
+{% block main %}
+<section class="wrap league-head">
+  <div class="league-head__text">
+    {% if league.kind %}<span class="label">{{ league.kind }}</span>{% endif %}
+    <h1 class="display league-head__title">{% if season_page %}<a href="{{ root }}leagues/{{ league.slug }}/">{{ league.title }}</a>{% else %}{{ league.title }}{% endif %}</h1>
+    {% if league.since or league.description %}
+    <p class="muted">{% if league.since %}Since {{ league.since }}{% endif %}{% if league.since and league.description %} · {% endif %}{{ league.description }}</p>
+    {% endif %}
+  </div>
+  {% if season_page and season.champion_person %}
+  <div class="champ">
+    <span class="champ__label">{{ season.title }} {{ 'winner' if league.is_game else 'champion' }}</span>
+    <span class="display champ__name">{{ season.champion_person.name }}</span>
+    {% if season.champion_team %}<span class="small">{{ season.champion_team }}</span>{% endif %}
+  </div>
+  {% elif not season_page and league.reigning %}
+  <div class="champ">
+    <span class="champ__label">Reigning {{ 'winner' if league.is_game else 'champion' }}</span>
+    <span class="display champ__name">{{ league.reigning.champion_person.name }}</span>
+    <span class="small">{% if league.reigning.champion_team %}{{ league.reigning.champion_team }} · {% endif %}{{ league.reigning.title }}</span>
+  </div>
+  {% endif %}
+</section>
+
+<section class="band">
+  <div class="wrap section columns">
+    <div class="columns__main">
+      {% if season %}
+      <h2 class="display sub-title">{{ season.title }}{% if not league.is_game %} standings{% endif %}{% if not season_page and not season.finished %} <span class="tag">In progress</span>{% endif %}</h2>
+      {{ season_block(league, season, root) }}
+      {% else %}
+      <p class="empty">No seasons have been entered for this {{ 'event' if league.is_game else 'league' }} yet.</p>
+      {% endif %}
+      {% if not season_page and league.body_html %}
+      <h2 class="display sub-title sub-title--spaced">About</h2>
+      <div class="prose">{{ league.body_html }}</div>
+      {% endif %}
+    </div>
+
+    <aside class="columns__side">
+      <div>
+        <h2 class="display side-title">Seasons</h2>
+        {% if league.seasons %}
+        <div class="rows">
+          {% for s in league.seasons %}
+          <a class="pair{% if season and s.slug == season.slug %} pair--current{% endif %}" href="{{ root }}leagues/{{ league.slug }}/{{ s.slug }}/">
+            <span>{{ s.title }}</span>
+            <span class="strong">{% if s.champion_person %}{{ s.champion_person.name }}{% elif not s.finished %}In progress{% endif %}</span>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty">None yet.</p>
+        {% endif %}
+      </div>
+      {% if league.posts %}
+      <div>
+        <h2 class="display side-title">Latest posts</h2>
+        <div class="rows">
+          {% for post in league.posts[:4] %}
+          <a class="side-post" href="{{ root }}blog/{{ post.slug }}/"><span class="strong">{{ post.title }}</span><span class="muted small">{{ post.date_text }}</span></a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+{% endblock %}

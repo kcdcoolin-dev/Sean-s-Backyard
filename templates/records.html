@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "parts.html" import person_link %}
+{% block title %}Hall of records · {{ site.title }}{% endblock %}
+{% block main %}
+<section class="wrap section">
+  <h1 class="display page-title">Hall of records</h1>
+
+  <h2 class="display sub-title">Championships</h2>
+  {% if title_table %}
+  <div class="table-scroll">
+    <table class="table">
+      <thead><tr><th scope="col">Name</th><th scope="col" class="right">Titles</th><th scope="col">Won</th></tr></thead>
+      <tbody>
+        {% for row in title_table %}
+        <tr{% if loop.first %} class="first"{% endif %}>
+          <td class="strong">{{ person_link(row.person, root) }}</td>
+          <td class="right rank">{{ row.titles|length }}</td>
+          <td class="muted">{% for s in row.titles %}<a href="{{ root }}leagues/{{ s.league.slug }}/{{ s.slug }}/">{{ s.league.title }}, {{ s.title }}</a>{% if not loop.last %}; {% endif %}{% endfor %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">No champions have been recorded yet. This table fills itself in from the seasons you enter.</p>
+  {% endif %}
+
+  <h2 class="display sub-title sub-title--spaced">Records</h2>
+  {% if records %}
+  <div class="table-scroll">
+    <table class="table">
+      <thead><tr><th scope="col">Record</th><th scope="col">Holder</th><th scope="col">Mark</th><th scope="col">League</th></tr></thead>
+      <tbody>
+        {% for record in records %}
+        <tr>
+          <td class="strong">{{ record.label }}</td>
+          <td>{{ person_link(record.holder_person, root) }}</td>
+          <td>{{ record.value }}{% if record.note %} <span class="muted small">({{ record.note }})</span>{% endif %}</td>
+          <td class="muted">{% if record.league %}<a href="{{ root }}leagues/{{ record.league.slug }}/">{{ record.league.title }}</a>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">No records have been added yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

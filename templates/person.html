@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ someone.title }} · {{ site.title }}{% endblock %}
+{% block main %}
+<section class="wrap league-head">
+  <div class="league-head__text">
+    <a class="label" href="{{ root }}people/">People</a>
+    <h1 class="display league-head__title">{{ someone.title }}</h1>
+    {% if someone.nickname %}<p class="muted">Also known as {{ someone.nickname }}</p>{% endif %}
+  </div>
+  <div class="champ">
+    <span class="champ__label">Championships</span>
+    <span class="display champ__name">{{ someone.history.titles|length }}</span>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap section columns">
+    <div class="columns__main">
+      {% if someone.body_html %}<div class="prose">{{ someone.body_html }}</div>{% endif %}
+      <h2 class="display sub-title{% if someone.body_html %} sub-title--spaced{% endif %}">Seasons played</h2>
+      {% if someone.history.played %}
+      <div class="rows">
+        {% for s in someone.history.played %}
+        <a class="pair" href="{{ root }}leagues/{{ s.league.slug }}/{{ s.slug }}/">
+          <span>{{ s.league.title }}, {{ s.title }}</span>
+          <span class="strong">{% if s.slug in someone.history.title_slugs %}{{ 'Winner' if s.league.is_game else 'Champion' }}{% endif %}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty">No seasons on record yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

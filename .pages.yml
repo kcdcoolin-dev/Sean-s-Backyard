@@ -1,0 +1,290 @@
+# Admin screen setup for Pages CMS (https://app.pagescms.org).
+# Each block below becomes a section in the admin screen.
+
+media:
+  input: media
+  output: /media
+
+content:
+  - name: posts
+    label: Blog posts
+    type: collection
+    path: content/posts
+    format: yaml-frontmatter
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, date, category]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: category
+        label: Category
+        type: select
+        description: Shown as the yellow tag next to the post.
+        options:
+          values: [Recap, Announcement, Power rankings, Trash talk, Other]
+      - name: league
+        label: League or event
+        type: reference
+        description: Optional. The post also shows up on that league's page.
+        options:
+          collection: leagues
+          search: title
+          value: "{name}"
+          label: "{title}"
+      - name: body
+        label: Post
+        type: rich-text
+
+  - name: seasons
+    label: Seasons and results
+    type: collection
+    path: content/seasons
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, league, order]
+      primary: title
+      sort: [order, title]
+    fields:
+      - name: title
+        label: Season name
+        type: string
+        required: true
+        description: "For example: 2026, or Season 2: Mafia."
+      - name: league
+        label: League or event
+        type: reference
+        required: true
+        options:
+          collection: leagues
+          search: title
+          value: "{name}"
+          label: "{title}"
+      - name: order
+        label: Sort number
+        type: number
+        required: true
+        description: Higher numbers are newer. Use the year (2026) or the season number (2).
+      - name: finished
+        label: Season is finished
+        type: boolean
+      - name: champion
+        label: Champion or winner
+        type: reference
+        options:
+          collection: people
+          search: title
+          value: "{name}"
+          label: "{title}"
+      - name: champion_team
+        label: Champion's team name
+        type: string
+      - name: standings
+        label: Standings (fantasy leagues)
+        type: object
+        description: One row per team, in finishing order from first to last.
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{team}"
+        fields:
+          - name: team
+            label: Team name
+            type: string
+          - name: manager
+            label: Manager
+            type: reference
+            options:
+              collection: people
+              search: title
+              value: "{name}"
+              label: "{title}"
+          - name: wins
+            label: Wins
+            type: number
+          - name: losses
+            label: Losses
+            type: number
+          - name: ties
+            label: Ties
+            type: number
+          - name: points_for
+            label: Points for
+            type: number
+          - name: points_against
+            label: Points against
+            type: number
+      - name: cast
+        label: Cast (game seasons)
+        type: object
+        description: One row per player.
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{role}"
+        fields:
+          - name: person
+            label: Player
+            type: reference
+            options:
+              collection: people
+              search: title
+              value: "{name}"
+              label: "{title}"
+          - name: role
+            label: Role
+            type: string
+            description: "For example: Traitor, Faithful."
+          - name: result
+            label: How it ended
+            type: string
+            description: "For example: Banished in round 2, Winner."
+      - name: body
+        label: Recap
+        type: rich-text
+
+  - name: leagues
+    label: Leagues and events
+    type: collection
+    path: content/leagues
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, kind, order]
+      primary: title
+      sort: [order, title]
+    fields:
+      - name: title
+        label: Name
+        type: string
+        required: true
+      - name: kind
+        label: Kind
+        type: string
+        description: "Shown as the yellow tag. For example: Fantasy football, Game series."
+      - name: format
+        label: Page format
+        type: select
+        required: true
+        description: Standings shows a standings table. Game shows a cast list.
+        options:
+          values:
+            - value: standings
+              label: Standings (fantasy leagues)
+            - value: game
+              label: Game (cast and recap)
+      - name: order
+        label: Sort number
+        type: number
+        description: Lower numbers are listed first.
+      - name: description
+        label: One-line description
+        type: string
+      - name: since
+        label: Running since
+        type: string
+        description: "For example: 2019."
+      - name: body
+        label: About
+        type: rich-text
+
+  - name: people
+    label: People
+    type: collection
+    path: content/people
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, nickname]
+      primary: title
+      sort: [title]
+    fields:
+      - name: title
+        label: Name
+        type: string
+        required: true
+      - name: nickname
+        label: Nickname
+        type: string
+      - name: body
+        label: Bio
+        type: rich-text
+
+  - name: records
+    label: Hall of records
+    type: file
+    path: content/records.yml
+    format: yaml
+    fields:
+      - name: records
+        label: Records
+        type: object
+        description: The championships table fills itself in from seasons. Add any other records here.
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{label}"
+        fields:
+          - name: label
+            label: Record
+            type: string
+            description: "For example: Highest single-week score."
+          - name: holder
+            label: Holder
+            type: reference
+            options:
+              collection: people
+              search: title
+              value: "{name}"
+              label: "{title}"
+          - name: value
+            label: Mark
+            type: string
+            description: "For example: 201.4 points."
+          - name: note
+            label: Note
+            type: string
+            description: "For example: Week 9, 2024."
+          - name: league
+            label: League or event
+            type: reference
+            options:
+              collection: leagues
+              search: title
+              value: "{name}"
+              label: "{title}"
+
+  - name: settings
+    label: Site settings
+    type: file
+    path: content/settings.yml
+    format: yaml
+    fields:
+      - name: title
+        label: Site name
+        type: string
+      - name: headline
+        label: Home page headline
+        type: string
+      - name: tagline
+        label: Home page tagline
+        type: text
+      - name: footer
+        label: Footer text
+        type: string
+      - name: admin_url
+        label: Admin link
+        type: string
+        description: Leave blank to hide the admin link in the footer.

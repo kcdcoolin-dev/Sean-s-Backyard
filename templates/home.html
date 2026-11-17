@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% from "parts.html" import person_link, post_rows %}
+{% block main %}
+<section class="wrap hero">
+  <div class="hero__text">
+    <h1 class="display hero__title">{{ site.headline or site.title }}</h1>
+    {% if site.tagline %}<p class="hero__tagline">{{ site.tagline }}</p>{% endif %}
+    <div class="buttons">
+      <a class="button button--solid" href="leagues/">See the leagues</a>
+      <a class="button" href="blog/">Read the blog</a>
+    </div>
+  </div>
+  {% if leagues %}
+  <div class="board">
+    <h2 class="board__title">Reigning champions</h2>
+    <div>
+      {% for league in leagues %}
+      <div class="board__row">
+        <a class="board__league" href="leagues/{{ league.slug }}/">{{ league.title }}</a>
+        {% if league.reigning %}
+        <span class="display board__name">{{ league.reigning.champion_person.name }} <span class="board__season">{{ league.reigning.title }}</span></span>
+        {% else %}
+        <span class="board__none">Not recorded yet</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<section class="band">
+  <div class="wrap section">
+    <h2 class="display section__title">Leagues &amp; events</h2>
+    {% if leagues %}
+    <div class="cards">
+      {% for league in leagues %}
+      <article class="card">
+        {% if league.kind %}<span class="label">{{ league.kind }}</span>{% endif %}
+        <h3 class="display card__title">{{ league.title }}</h3>
+        {% if league.description %}<p class="muted">{{ league.description }}</p>{% endif %}
+        <p class="muted small">{{ league.seasons|length }} season{{ '' if league.seasons|length == 1 else 's' }} on record</p>
+        <a class="card__link" href="leagues/{{ league.slug }}/">{{ 'Event page' if league.is_game else 'League page' }}<span class="sr-only">: {{ league.title }}</span></a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty">No leagues or events have been added yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap section">
+    <div class="section__head">
+      <h2 class="display section__title">From the blog</h2>
+      {% if posts %}<a href="blog/">All posts</a>{% endif %}
+    </div>
+    {% if posts %}
+    {{ post_rows(posts[:3], root) }}
+    {% else %}
+    <p class="empty">No posts yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="band band--yellow">
+  <div class="wrap section">
+    <div class="section__head">
+      <h2 class="display section__title">Hall of records</h2>
+      <a href="records/">All records</a>
+    </div>
+    {% if title_table or records %}
+    <div class="stats">
+      {% if title_table %}
+      <div class="stat">
+        <span class="stat__label">Most championships, all leagues</span>
+        <span class="display stat__value">{{ title_table[0].person.name }} · {{ title_table[0].titles|length }}</span>
+      </div>
+      {% endif %}
+      {% for record in records[:2] %}
+      <div class="stat">
+        <span class="stat__label">{{ record.label }}</span>
+        <span class="display stat__value">{% if record.holder_person %}{{ record.holder_person.name }}{% endif %}{% if record.holder_person and record.value %} · {% endif %}{{ record.value }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>Champions and records will show up here as seasons are entered.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
