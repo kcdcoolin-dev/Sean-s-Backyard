@@ -1,1 +1,31 @@
-records: []
+records:
+  - label: Highest team score
+    holder: sierrabeilby
+    value: 209.06 points
+    note: Week 10, 2025, vs chrise828
+    league: fantasy-football
+  - label: Biggest blowout
+    holder: sierrabeilby
+    value: "+91.94"
+    note: Week 7, 2025, 187.74–95.80 vs KyleDoh
+    league: fantasy-football
+  - label: Best regular-season record
+    holder: sierrabeilby
+    value: "12–1"
+    note: 2025
+    league: fantasy-football
+  - label: Highest individual player score
+    holder: sierrabeilby
+    value: 55.4 points
+    note: Jahmyr Gibbs, Week 12, 2025
+    league: fantasy-football
+  - label: Lowest team score
+    holder: iams81
+    value: 54.04 points
+    note: Week 13, 2025, vs SierraBeilby
+    league: fantasy-football
+  - label: Closest win
+    holder: weathermanbren
+    value: "+2.70"
+    note: Week 12, 2025, 151.46–148.76 vs JerradDettmann
+    league: fantasy-football
